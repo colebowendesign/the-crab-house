@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Crab House — Best Cajun Seafood & Hot Wings in Hattiesburg, MS</title>
+  <meta name="description" content="We offer authentic and delicious Cajun Seafood, Hot Wings & Sandwiches in Hattiesburg, MS. Order online for pickup and enjoy your favorite dishes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@700&family=Space+Grotesk:wght@300;400;500;600;700&family=Archivo:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ===================== RESET ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: auto; }
+
+    :root {
+      --bg:           #15201d;
+      --bg-section:   #111a17;
+      --accent:       #DE3021;
+      --accent-glow:  rgba(222, 48, 33, 0.32);
+      --accent-light: #ff6b55;
+      --text:         #ffffff;
+      --text-muted:   rgba(255,255,255,0.58);
+      --glass:        rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.09);
+      --font-display: 'Lobster Two', cursive;
+      --font-head:    'Space Grotesk', sans-serif;
+      --font-body:    'Archivo', sans-serif;
+      --radius:       20px;
+    }
+
+    ::selection { background: var(--accent); color: #fff; }
+
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: #0d1512; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--accent), var(--accent-light)); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 10px var(--accent-glow); }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ===================== STARSCAPE ===================== */
+    #starscape {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    /* ===================== LOADER ===================== */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.75rem;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-logo {
+      width: 110px;
+      height: auto;
+      border-radius: 12px;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.65; transform: scale(0.96); }
+    }
+
+    .loader-label {
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .loader-bar-track {
+      width: 210px;
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    #loader-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      box-shadow: 0 0 14px var(--accent-glow);
+      transition: width 0.08s linear;
+    }
+
+    /* ===================== SCROLL PROGRESS ===================== */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      z-index: 1000;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* ===================== NAVBAR ===================== */
+    #navbar {
+      position: fixed;
+      top: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 3rem);
+      max-width: 1400px;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #navbar.scrolled {
+      max-width: 840px;
+      background: rgba(21, 32, 29, 0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 0.7rem 1.5rem;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      height: 42px;
+      width: auto;
+      border-radius: 8px;
+    }
+    .nav-logo-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-head);
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-order {
+      background: var(--accent) !important;
+      color: #fff !important;
+      padding: 0.5rem 1.2rem !important;
+      border-radius: 999px !important;
+      font-weight: 600 !important;
+      box-shadow: 0 4px 18px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-order:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--accent-glow) !important; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      #navbar.scrolled { max-width: calc(100% - 2rem); }
+    }
+
+    /* ===================== HELPERS ===================== */
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .section-divider {
+      width: 52px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 999px;
+      box-shadow: 0 0 12px var(--accent-glow);
+      margin-top: 1rem;
+    }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header .section-divider { margin-left: auto; margin-right: auto; }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.9rem 2rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--accent-glow); }
+
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.9rem 2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.06); }
+
+    /* ===================== HERO ===================== */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 9rem 2rem 6rem;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.22;
+      animation: orb-float 9s ease-in-out infinite;
+    }
+    .orb-1 { width: 540px; height: 540px; background: var(--accent); top: -12%; left: -14%; animation-delay: 0s; }
+    .orb-2 { width: 420px; height: 420px; background: #ff8c42; top: 35%; right: -8%; animation-delay: -3.5s; }
+    .orb-3 { width: 320px; height: 320px; background: var(--accent); bottom: 8%; left: 18%; animation-delay: -6s; }
+    @keyframes orb-float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(16px,-22px) scale(1.06); }
+      66%      { transform: translate(-12px, 12px) scale(0.94); }
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          rgba(200,140,70,0.055) 0px,
+          rgba(200,140,70,0.055) 1.5px,
+          transparent 1.5px,
+          transparent 44px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(200,140,70,0.055) 0px,
+          rgba(200,140,70,0.055) 1.5px,
+          transparent 1.5px,
+          transparent 44px
+        );
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(222,48,33,0.12);
+      border: 1px solid rgba(222,48,33,0.28);
+      color: #ff8070;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      margin-bottom: 1.6rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 9vw, 7rem);
+      line-height: 1.05;
+      margin-bottom: 1.1rem;
+      text-shadow: 0 2px 48px rgba(0,0,0,0.5);
+    }
+    .hero-title span { color: var(--accent); }
+
+    .hero-sub {
+      font-family: var(--font-head);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    .scroll-hint {
+      margin-top: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: hint 2.2s ease-in-out infinite;
+    }
+    @keyframes hint {
+      0%,100% { transform: translateY(0); opacity: 0.7; }
+      50%      { transform: translateY(7px); opacity: 0.35; }
+    }
+
+    /* ===================== SCROLL SECTION ===================== */
+    #scroll-section {
+      position: relative;
+      height: 350vh;
+      z-index: 1;
+    }
+    @media (max-width: 768px) { #scroll-section { height: 280vh; } }
+    @media (max-width: 480px) { #scroll-section { height: 240vh; } }
+
+    .canvas-wrap {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    #scroll-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* Annotation cards */
+    .a-card {
+      position: absolute;
+      z-index: 10;
+      background: rgba(16, 26, 22, 0.78);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 18px;
+      padding: 1.4rem 1.6rem;
+      max-width: 270px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(18px) scale(0.95);
+      transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .a-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    .a-card-num {
+      font-family: var(--font-head);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .a-card-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.45rem;
+    }
+    .a-card-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .a-card-stat {
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+    }
+    .a-stat-val {
+      font-family: var(--font-head);
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .a-stat-lbl {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+    }
+
+    /* Card positions */
+    .a-card-l { left: 3vw; top: 50%; }
+    .a-card-r { right: 3vw; top: 50%; }
+
+    /* Mobile: single bottom bar */
+    @media (max-width: 768px) {
+      .a-card {
+        bottom: 2vh !important;
+        top: auto !important;
+        left: 50% !important;
+        right: auto !important;
+        max-width: calc(100vw - 2.5rem);
+        transform: translateX(-50%) translateY(14px) scale(0.97) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.85rem 1.1rem;
+        border-radius: 14px;
+      }
+      .a-card.visible { transform: translateX(-50%) translateY(0) scale(1) !important; }
+      .a-card-desc, .a-card-stat { display: none; }
+      .a-card-title { font-size: 0.95rem; margin-bottom: 0; }
+      .a-card-num { margin-bottom: 0; }
+    }
+
+    /* ===================== SPECS ===================== */
+    #specs {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      text-align: center;
+      background: var(--bg-section);
+    }
+
+    .specs-eyebrow { margin-bottom: 0.6rem; }
+    .specs-heading { margin-bottom: 0.5rem; }
+    .specs-divider { margin: 1rem auto 3.5rem; }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) { .specs-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .spec-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2.2rem 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .spec-card:hover { border-color: rgba(222,48,33,0.28); transform: translateY(-3px); }
+    .spec-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .spec-card.lit::after { opacity: 1; }
+
+    .spec-num {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .spec-card.lit .spec-num { color: var(--accent); text-shadow: 0 0 22px var(--accent-glow); }
+    .spec-unit { font-size: 1.3rem; color: var(--accent); }
+    .spec-lbl {
+      font-family: var(--font-head);
+      font-size: 0.76rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ===================== FEATURES ===================== */
+    #features {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px) { .features-grid { grid-template-columns: 1fr; } }
+
+    .feat-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(222,48,33,0.07), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 24px 44px rgba(0,0,0,0.28); border-color: rgba(222,48,33,0.28); }
+    .feat-card:hover::before { opacity: 1; }
+
+    .feat-emoji { font-size: 2.4rem; display: block; margin-bottom: 1.1rem; }
+    .feat-name { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .feat-price { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.7rem; }
+    .feat-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ===================== GALLERY ===================== */
+    #gallery {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+      background: var(--bg-section);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 260px 260px;
+      gap: 10px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .gallery-grid .gi:nth-child(1) { grid-column: span 2; }
+    .gallery-grid .gi:nth-child(7) { grid-column: span 2; }
+
+    @media (max-width: 900px) {
+      .gallery-grid { grid-template-columns: repeat(2,1fr); grid-template-rows: auto; }
+      .gallery-grid .gi:nth-child(1),
+      .gallery-grid .gi:nth-child(7) { grid-column: span 1; }
+    }
+    @media (max-width: 520px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+    .gi {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gi img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); display: block; }
+    .gi:hover img { transform: scale(1.08); }
+
+    .gi-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.1rem;
+    }
+    .gi:hover .gi-overlay { opacity: 1; }
+    .gi-name { font-family: var(--font-head); font-size: 0.85rem; font-weight: 600; color: #fff; }
+
+    /* ===================== OUR STORY ===================== */
+    #our-story {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+    }
+
+    .story-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4.5rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .story-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .story-img {
+      border-radius: 22px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      position: relative;
+    }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1); display: block; }
+    .story-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.09);
+      pointer-events: none;
+    }
+
+    .story-text .section-label { text-align: left; }
+    .story-text .section-title { text-align: left; }
+    .story-text .section-divider { margin-left: 0; margin-bottom: 1.6rem; }
+    .story-body { font-size: 0.97rem; color: var(--text-muted); line-height: 1.82; margin-bottom: 1.2rem; }
+    .story-btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+
+    /* ===================== REVIEWS ===================== */
+    #reviews {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 0 6rem;
+      background: var(--bg-section);
+    }
+    .reviews-header { padding: 0 2rem; }
+
+    .reviews-scroll {
+      overflow-x: auto;
+      padding: 2rem 2rem 0.5rem;
+      scrollbar-width: none;
+      cursor: grab;
+      user-select: none;
+    }
+    .reviews-scroll:active { cursor: grabbing; }
+    .reviews-scroll::-webkit-scrollbar { display: none; }
+
+    .reviews-track { display: flex; gap: 1.2rem; width: max-content; }
+
+    .rev-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 1.9rem;
+      width: 308px;
+      flex-shrink: 0;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .rev-card:hover { transform: translateY(-4px); border-color: rgba(222,48,33,0.28); }
+
+    .rev-stars { color: #fbbf24; font-size: 0.95rem; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .rev-text { font-size: 0.875rem; color: var(--text-muted); line-height: 1.72; font-style: italic; margin-bottom: 1.4rem; }
+    .rev-author { font-family: var(--font-head); font-size: 0.83rem; font-weight: 600; color: var(--text); }
+
+    /* ===================== CTA ===================== */
+    #cta {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: var(--accent);
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.1;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      line-height: 1.08;
+      margin-bottom: 1.1rem;
+    }
+    .cta-title span { color: var(--accent); }
+    .cta-sub { font-family: var(--font-head); font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.65; }
+    .cta-details {
+      display: flex;
+      justify-content: center;
+      gap: 2.2rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+    .cta-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ===================== FOOTER ===================== */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: rgba(0,0,0,0.35);
+      border-top: 1px solid var(--glass-border);
+      padding: 4.5rem 2rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+
+    .footer-brand-logo { height: 48px; margin-bottom: 1rem; display: block; border-radius: 8px; }
+    .footer-brand-name { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.7rem; }
+    .footer-brand-desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; max-width: 230px; }
+
+    .footer-col h4 {
+      font-family: var(--font-head);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .footer-col a { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      gap: 1rem;
+    }
+    .hours-row span:last-child { color: var(--text); white-space: nowrap; }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-copy { font-size: 0.79rem; color: var(--text-muted); }
+    .footer-legal { display: flex; gap: 1.5rem; }
+    .footer-legal a { font-size: 0.79rem; color: var(--text-muted); text-decoration: none; }
+    .footer-legal a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<!-- ========== STARSCAPE ========== -->
+<canvas id="starscape"></canvas>
+
+<!-- ========== LOADER ========== -->
+<div id="loader">
+  <img class="loader-logo" src="crab-house-logo.jpeg" alt="The Crab House">
+  <div class="loader-label">Loading Experience</div>
+  <div class="loader-bar-track"><div id="loader-bar"></div></div>
+</div>
+
+<!-- ========== SCROLL PROGRESS ========== -->
+<div id="scroll-progress"></div>
+
+<!-- ========== NAVBAR ========== -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <img src="crab-house-logo.jpeg" alt="Logo">
+    <span class="nav-logo-name">The Crab House</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#our-story">Our Story</a></li>
+    <li><a href="#features">Menu</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="https://order.thecrabhousems.com/menu" class="nav-order" target="_blank">Order Online</a></li>
+  </ul>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="hero">
+  <div class="hero-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">🦀 Hattiesburg's Favorite Seafood Spot</div>
+
+  <h1 class="hero-title">
+    Welcome to<br><span>The Crab House</span>
+  </h1>
+
+  <p class="hero-sub">
+    Best Cajun Seafood &amp; Hot Wings in Hattiesburg, MS.<br>
+    Fresh ingredients. Bold flavors. Order online for pickup.
+  </p>
+
+  <div class="hero-btns">
+    <a href="https://order.thecrabhousems.com/menu" class="btn-primary" target="_blank">Order Online Now</a>
+    <a href="#our-story" class="btn-secondary">Our Story</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll to Explore</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ========== SCROLL ANIMATION ========== -->
+<section id="scroll-section">
+  <div class="canvas-wrap">
+    <canvas id="scroll-canvas"></canvas>
+
+    <div class="a-card a-card-l" id="ac0" data-show="0.12" data-hide="0.26">
+      <div class="a-card-num">01 — Freshness</div>
+      <div class="a-card-title">Fresh Off the Bayou</div>
+      <div class="a-card-desc">Premium ingredients sourced fresh every single day — Cajun seafood at its finest.</div>
+      <div class="a-card-stat"><span class="a-stat-val">Daily</span><span class="a-stat-lbl">&nbsp;fresh prep</span></div>
+    </div>
+
+    <div class="a-card a-card-r" id="ac1" data-show="0.26" data-hide="0.46">
+      <div class="a-card-num">02 — The Boil</div>
+      <div class="a-card-title">Signature Cajun Boil</div>
+      <div class="a-card-desc">Our secret spice blend takes every seafood boil straight to Louisiana.</div>
+      <div class="a-card-stat"><span class="a-stat-val">100%</span><span class="a-stat-lbl">&nbsp;Cajun seasoned</span></div>
+    </div>
+
+    <div class="a-card a-card-l" id="ac2" data-show="0.46" data-hide="0.64">
+      <div class="a-card-num">03 — Platters</div>
+      <div class="a-card-title">Built for Sharing</div>
+      <div class="a-card-desc">From solo lunch specials to the Mega Combo Platter that feeds a whole crowd.</div>
+      <div class="a-card-stat"><span class="a-stat-val">$20.99</span><span class="a-stat-lbl">&nbsp;platters from</span></div>
+    </div>
+
+    <div class="a-card a-card-r" id="ac3" data-show="0.64" data-hide="0.84">
+      <div class="a-card-num">04 — Wings</div>
+      <div class="a-card-title">Party Wings Done Right</div>
+      <div class="a-card-desc">Crispy outside, juicy inside — available from 6 to 100 pieces for any occasion.</div>
+      <div class="a-card-stat"><span class="a-stat-val">100pc</span><span class="a-stat-lbl">&nbsp;party size</span></div>
+    </div>
+
+    <div class="a-card a-card-l" id="ac4" data-show="0.84" data-hide="1.01">
+      <div class="a-card-num">05 — Order</div>
+      <div class="a-card-title">Order in Seconds</div>
+      <div class="a-card-desc">Online pickup ready fast — skip the wait and get all the flavor.</div>
+      <div class="a-card-stat"><span class="a-stat-val">Online</span><span class="a-stat-lbl">&nbsp;quick pickup</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SPECS ========== -->
+<section id="specs">
+  <div class="section-label specs-eyebrow">By the Numbers</div>
+  <div class="section-title specs-heading">Why Hattiesburg Loves Us</div>
+  <div class="section-divider specs-divider"></div>
+  <div class="specs-grid">
+    <div class="spec-card">
+      <div class="spec-num" data-target="100" data-suffix="+">0</div>
+      <div class="spec-lbl">Menu Items</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-num" data-target="4.8" data-suffix="★" data-dec="1">0</div>
+      <div class="spec-lbl">Customer Rating</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-num" data-target="7" data-suffix="">0</div>
+      <div class="spec-lbl">Days a Week</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-num" data-target="1" data-suffix=" Click">0</div>
+      <div class="spec-lbl">Online Ordering</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section id="features">
+  <div class="section-header">
+    <div class="section-label">Featured Dishes</div>
+    <div class="section-title">Popular Menu Items</div>
+    <div class="section-divider"></div>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <span class="feat-emoji">🦀</span>
+      <div class="feat-name">Mega Combo Platter</div>
+      <div class="feat-price">$45.99</div>
+      <div class="feat-desc">The ultimate seafood feast — boiled to perfection with our signature Cajun spice blend. Feeds the whole table.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-emoji">🦐</span>
+      <div class="feat-name">Shrimp & Snow Crab</div>
+      <div class="feat-price">$26.99</div>
+      <div class="feat-desc">Succulent shrimp and sweet snow crab — a delightful taste of the ocean in every perfect bite.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-emoji">🍗</span>
+      <div class="feat-name">Party Wings</div>
+      <div class="feat-price">From $6.99</div>
+      <div class="feat-desc">Available from 6 to 100 pieces. Perfect for any occasion — game nights, family dinners, or just you.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-emoji">❄️</span>
+      <div class="feat-name">Snow Crab Combo</div>
+      <div class="feat-price">$20.99</div>
+      <div class="feat-desc">Special boiled snow crab combo — rich, sweet crab meat with bold Cajun seasoning. A crowd favorite.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-emoji">🍤</span>
+      <div class="feat-name">20pc Fried Shrimp</div>
+      <div class="feat-price">$15.99</div>
+      <div class="feat-desc">Golden, crispy, and generous — served with fries and your choice of dipping sauce. Impossible to stop at one.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-emoji">🥖</span>
+      <div class="feat-name">Lunch Specials</div>
+      <div class="feat-price">From $7.99</div>
+      <div class="feat-desc">Daily lunch specials including fish plates, shrimp, chicken tenders, poboys, and more. Great value every day.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== GALLERY ========== -->
+<section id="gallery">
+  <div class="section-header">
+    <div class="section-label">Check It Out</div>
+    <div class="section-title">Fresh From the Kitchen</div>
+    <div class="section-divider"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/145cb982-9386-43e0-f574-e3937bf71500/public" alt="Boiled Blue Crabs" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Boiled Blue Crabs</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/3b231900-f285-4939-b555-c10936f06300/public" alt="Shrimp & Snow Crab Combo" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Shrimp & Snow Crab Combo</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/b678bae0-9e0e-4001-8512-738983f51e00/public" alt="Crispy Fried Shrimp" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Crispy Fried Shrimp</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/cbeba540-c0b8-4ff0-28c0-ad64a433d100/public" alt="Fish Nuggets" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Fish Nuggets</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/525da5c9-f07a-4d90-bcbb-e2fa61723900/public" alt="Oyster Plate" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Oyster Plate</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/3c0de389-fece-44fa-90d2-99cd78a79b00/public" alt="Popcorn Shrimp" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Popcorn Shrimp</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/0857dffa-375a-411e-f582-30b848982500/public" alt="Seafood Platter" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Seafood Platter</span></div>
+    </div>
+    <div class="gi">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/f2b24ebc-2e2c-4067-c7b4-531a2b9fa900/public" alt="Swai & Shrimp Combo" loading="lazy">
+      <div class="gi-overlay"><span class="gi-name">Swai & Shrimp Combo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== OUR STORY ========== -->
+<section id="our-story">
+  <div class="story-inner">
+    <div class="story-img">
+      <img src="https://imagedelivery.net/9lr8zq_Jvl7h6OFWqEi9IA/945e83f6-7075-4d4c-71cb-c5407e8b9200/public" alt="Our Story">
+    </div>
+    <div class="story-text">
+      <div class="section-label">Where We Started</div>
+      <div class="section-title">Our Story</div>
+      <div class="section-divider"></div>
+      <p class="story-body">
+        The Crab House Restaurant offers delicious tasting Cajun Seafood &amp; Hot Wings in Hattiesburg, MS. Our convenient location and affordable prices make us a natural choice for eat-in or take-out meals in the Hattiesburg community.
+      </p>
+      <p class="story-body">
+        Our restaurant is known for its variety of seafood and high quality fresh ingredients. Come and experience our friendly atmosphere and excellent service.
+      </p>
+      <div class="story-btns">
+        <a href="https://order.thecrabhousems.com/menu" class="btn-primary" target="_blank">View Full Menu</a>
+        <a href="https://www.google.com/maps/search/3801+Hardy+St,+Hattiesburg,+MS+39402" class="btn-secondary" target="_blank">Get Directions</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== REVIEWS ========== -->
+<section id="reviews">
+  <div class="section-header reviews-header">
+    <div class="section-label">What Customers Say</div>
+    <div class="section-title">Real Reviews</div>
+    <div class="section-divider" style="margin-left:auto;margin-right:auto;"></div>
+  </div>
+  <div class="reviews-scroll" id="reviews-scroll">
+    <div class="reviews-track">
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Wow, I ordered the (20) fried shrimp and fried okra and potato salad. I was impressed with the amount of food — the shrimp are huge and a lot of okra and the potato salad was very good also."</p>
+        <div class="rev-author">Jason McMurtry</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Fantastic crawfish, huge! They boil the biggest, then coat them with garlic butter and more dry seasoning once it's bagged. Not too spicy, just right for this South Louisiana boy. Magnifico!"</p>
+        <div class="rev-author">John Mc</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Quick counter service. Easy for carryout or dine-in. Great low country boil platter and cornmeal fried shrimp. The crab was succulent and easy to get out of the shell."</p>
+        <div class="rev-author">Steven Russell</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Ordered wings again with a shrimp poboy — my order was ready when I arrived. The wings were delicious and the shrimp poboy was superb! Will definitely be ordering again."</p>
+        <div class="rev-author">Marcu Burkett</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Love this place — get the same thing every time I go. The special steam platter spicy. Sometimes I have to order two platters because it's so good. Really love the corn with the butter."</p>
+        <div class="rev-author">Cassandra Brown</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Nice place to grab a bite if you're into seafood. It's a clean place you can bring the family or go alone. I go at least 3–4 times a week during crawfish season."</p>
+        <div class="rev-author">Quinlyn Burise</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <div class="section-label">Ready to Order?</div>
+    <h2 class="cta-title">Get Your <span>Cajun Fix</span><br>Right Now</h2>
+    <p class="cta-sub">Order online for quick pickup or stop by our Hattiesburg location.<br>Fresh, bold, and ready when you are.</p>
+    <a href="https://order.thecrabhousems.com/menu" class="btn-primary" target="_blank" style="font-size:1.05rem; padding:1rem 2.4rem;">Order Online Now →</a>
+    <div class="cta-details">
+      <div class="cta-detail-item">📍 3801 Hardy St, Hattiesburg, MS 39402</div>
+      <div class="cta-detail-item">📞 (601) 268-6437</div>
+      <div class="cta-detail-item">🕐 Open 7 Days a Week</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <img class="footer-brand-logo" src="crab-house-logo.jpeg" alt="The Crab House">
+        <div class="footer-brand-name">The Crab House</div>
+        <p class="footer-brand-desc">Authentic Cajun Seafood &amp; Hot Wings in Hattiesburg, MS. Dine-in, takeout, or order online.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#our-story">Our Story</a></li>
+          <li><a href="#features">Menu</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Order</h4>
+        <ul>
+          <li><a href="https://order.thecrabhousems.com/menu" target="_blank">Order Online</a></li>
+          <li><a href="https://www.google.com/maps/search/3801+Hardy+St,+Hattiesburg,+MS+39402" target="_blank">Get Directions</a></li>
+          <li><a href="tel:6012686437">(601) 268-6437</a></li>
+          <li><a href="https://www.yelp.com/biz/the-crab-house-hattiesburg" target="_blank">Yelp</a></li>
+          <li><a href="https://www.tripadvisor.com/Restaurant_Review-g43810-d15089832" target="_blank">TripAdvisor</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hours</h4>
+        <div class="hours-row"><span>Mon – Thu</span><span>10 AM – 9 PM</span></div>
+        <div class="hours-row"><span>Fri – Sat</span><span>10 AM – 9:45 PM</span></div>
+        <div class="hours-row"><span>Sunday</span><span>11 AM – 9 PM</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 The Crab House – Hattiesburg. All Rights Reserved.</div>
+      <div class="footer-legal">
+        <a href="https://order.thecrabhousems.com/tos" target="_blank">Terms</a>
+        <a href="https://order.thecrabhousems.com/privacy" target="_blank">Privacy</a>
+        <a href="https://order.thecrabhousems.com/accessibility" target="_blank">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   STARSCAPE
+============================================================ */
+(function () {
+  const c = document.getElementById('starscape');
+  const ctx = c.getContext('2d');
+
+  const PLANK_COLORS = [
+    '#4a3120','#533722','#46301e','#4e3521','#3f2b1a',
+    '#563c26','#49301f','#523622','#3d291b','#4c3320'
+  ];
+
+  function drawPlanks() {
+    const W = c.width, H = c.height;
+    const PLANK_H = 78, GAP = 4;
+    ctx.clearRect(0, 0, W, H);
+
+    let y = 0, pi = 0;
+    while (y < H) {
+      // base plank fill with subtle horizontal gradient
+      const grad = ctx.createLinearGradient(0, y, 0, y + PLANK_H);
+      const base = PLANK_COLORS[pi % PLANK_COLORS.length];
+      grad.addColorStop(0,   base + 'ee');
+      grad.addColorStop(0.5, base + 'ff');
+      grad.addColorStop(1,   base + 'cc');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, y, W, PLANK_H);
+
+      // horizontal edge highlight (top of plank)
+      ctx.fillStyle = 'rgba(255,200,120,0.06)';
+      ctx.fillRect(0, y, W, 2);
+
+      // grain lines
+      const grains = 6 + Math.floor(Math.random() * 8);
+      for (let g = 0; g < grains; g++) {
+        const gy = y + 4 + Math.random() * (PLANK_H - 8);
+        const alpha = Math.random() * 0.14 + 0.03;
+        const dark = Math.random() > 0.45;
+        ctx.strokeStyle = dark ? `rgba(0,0,0,${alpha})` : `rgba(255,210,140,${alpha * 0.6})`;
+        ctx.lineWidth = Math.random() * 1.4 + 0.25;
+        ctx.beginPath();
+        ctx.moveTo(0, gy);
+        ctx.bezierCurveTo(
+          W * 0.25 + (Math.random() - 0.5) * 60, gy + (Math.random() - 0.5) * 10,
+          W * 0.75 + (Math.random() - 0.5) * 60, gy + (Math.random() - 0.5) * 10,
+          W, gy + (Math.random() - 0.5) * 6
+        );
+        ctx.stroke();
+      }
+
+      // occasional knot
+      if (Math.random() < 0.18) {
+        const kx = W * 0.1 + Math.random() * W * 0.8;
+        const ky = y + PLANK_H * 0.25 + Math.random() * PLANK_H * 0.5;
+        const kr = 7 + Math.random() * 14;
+        const kg = ctx.createRadialGradient(kx, ky, 0, kx, ky, kr);
+        kg.addColorStop(0,   'rgba(15,8,3,0.55)');
+        kg.addColorStop(0.45,'rgba(25,12,5,0.28)');
+        kg.addColorStop(1,   'rgba(0,0,0,0)');
+        ctx.fillStyle = kg;
+        ctx.beginPath();
+        ctx.ellipse(kx, ky, kr, kr * 0.65, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // gap shadow between planks
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, y + PLANK_H, W, GAP);
+
+      y += PLANK_H + GAP;
+      pi++;
+    }
+
+    // dark teal overlay to integrate with site palette
+    const overlay = ctx.createLinearGradient(0, 0, 0, H);
+    overlay.addColorStop(0, 'rgba(21,32,29,0.70)');
+    overlay.addColorStop(1, 'rgba(17,26,23,0.74)');
+    ctx.fillStyle = overlay;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function resize() {
+    c.width  = window.innerWidth;
+    c.height = window.innerHeight;
+    drawPlanks();
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+})();
+
+/* ============================================================
+   FRAME LOADER
+============================================================ */
+const TOTAL = 113;
+const frames = [];
+let loaded = 0;
+let ready = false;
+
+(function preload() {
+  const bar = document.getElementById('loader-bar');
+  for (let i = 1; i <= TOTAL; i++) {
+    const img = new Image();
+    img.src = 'frames/frame_' + String(i).padStart(4, '0') + '.jpg';
+    const done = () => {
+      loaded++;
+      bar.style.width = Math.round((loaded / TOTAL) * 100) + '%';
+      if (loaded === TOTAL) {
+        ready = true;
+        setTimeout(() => document.getElementById('loader').classList.add('hidden'), 450);
+      }
+    };
+    img.onload = done;
+    img.onerror = done;
+    frames.push(img);
+  }
+})();
+
+/* ============================================================
+   SCROLL CANVAS
+============================================================ */
+const canvas = document.getElementById('scroll-canvas');
+const ctx2 = canvas.getContext('2d');
+const scrollSection = document.getElementById('scroll-section');
+let curFrame = -1;
+let dpr = window.devicePixelRatio || 1;
+
+function resizeCanvas() {
+  dpr = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (curFrame >= 0) drawFrame(curFrame);
+}
+
+function drawFrame(i) {
+  const img = frames[i];
+  if (!img || !img.complete || !img.naturalWidth) return;
+  const cw = window.innerWidth, ch = window.innerHeight;
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  ctx2.clearRect(0, 0, cw, ch);
+  const mobile = cw <= 768;
+  const scale = mobile
+    ? Math.min(cw / iw, ch / ih) * 1.15
+    : Math.max(cw / iw, ch / ih);
+  const sw = iw * scale, sh = ih * scale;
+  ctx2.drawImage(img, (cw - sw) / 2, (ch - sh) / 2, sw, sh);
+}
+
+let rafId = null;
+function schedDraw(i) {
+  if (rafId) return;
+  rafId = requestAnimationFrame(() => {
+    rafId = null;
+    if (i !== curFrame) { curFrame = i; drawFrame(i); }
+  });
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// draw first frame once available
+const waitFirst = setInterval(() => {
+  if (frames[0]?.complete && frames[0]?.naturalWidth) {
+    clearInterval(waitFirst);
+    drawFrame(0);
+  }
+}, 50);
+
+/* ============================================================
+   SCROLL HANDLER
+============================================================ */
+const cards = document.querySelectorAll('.a-card');
+const SNAP_PTS = [0.15, 0.27, 0.47, 0.65, 0.85];
+const SNAP_TOL = 0.022;
+const HOLD_MS = 580;
+let snapLocked = false;
+let lastSnap = -1;
+
+function onScroll() {
+  const sy = window.scrollY;
+  const dh = document.documentElement.scrollHeight - window.innerHeight;
+
+  // progress bar
+  document.getElementById('scroll-progress').style.width = ((sy / dh) * 100) + '%';
+
+  // navbar pill
+  document.getElementById('navbar').classList.toggle('scrolled', sy > 80);
+
+  // frame animation
+  const rect = scrollSection.getBoundingClientRect();
+  const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+
+  if (inSection) {
+    const sectionH = scrollSection.offsetHeight - window.innerHeight;
+    const progress = Math.max(0, Math.min(1, -rect.top / sectionH));
+    const fi = Math.min(TOTAL - 1, Math.floor(progress * (TOTAL - 1)));
+    schedDraw(fi);
+
+    // annotation cards
+    cards.forEach(card => {
+      const show = +card.dataset.show, hide = +card.dataset.hide;
+      card.classList.toggle('visible', progress >= show && progress < hide);
+    });
+
+    // snap-stop
+    if (!snapLocked) {
+      for (const sp of SNAP_PTS) {
+        if (Math.abs(progress - sp) < SNAP_TOL && Math.abs(lastSnap - sp) > SNAP_TOL * 2) {
+          lastSnap = sp;
+          snapLocked = true;
+          const target = scrollSection.offsetTop + sp * sectionH;
+          window.scrollTo({ top: target, behavior: 'instant' });
+          document.body.style.overflow = 'hidden';
+          setTimeout(() => { snapLocked = false; document.body.style.overflow = ''; }, HOLD_MS);
+          break;
+        }
+      }
+    }
+  } else {
+    if (rect.top > 0) {
+      schedDraw(0);
+      cards.forEach(c => c.classList.remove('visible'));
+    }
+  }
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+
+/* ============================================================
+   SPECS COUNT-UP
+============================================================ */
+function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+function countUp(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const dec = el.dataset.dec === '1';
+  const card = el.closest('.spec-card');
+  const dur = 1700;
+  const t0 = performance.now();
+  card.classList.add('lit');
+
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const v = target * easeOutExpo(p);
+    el.textContent = (dec ? v.toFixed(1) : Math.floor(v)) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+    else { el.textContent = (dec ? target.toFixed(1) : target) + suffix; card.classList.remove('lit'); }
+  })(t0);
+}
+
+const specObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => countUp(e.target.querySelector('.spec-num')), i * 190);
+      specObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.spec-card').forEach(el => specObs.observe(el));
+
+/* ============================================================
+   REVIEWS DRAG-SCROLL
+============================================================ */
+(function () {
+  const wrap = document.getElementById('reviews-scroll');
+  let down = false, startX, sl;
+  wrap.addEventListener('mousedown', e => { down = true; startX = e.pageX - wrap.offsetLeft; sl = wrap.scrollLeft; });
+  wrap.addEventListener('mouseleave', () => { down = false; });
+  wrap.addEventListener('mouseup', () => { down = false; });
+  wrap.addEventListener('mousemove', e => {
+    if (!down) return;
+    e.preventDefault();
+    wrap.scrollLeft = sl - (e.pageX - wrap.offsetLeft - startX) * 1.5;
+  });
+})();
+</script>
+</body>
+</html>
