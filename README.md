@@ -5,29 +5,23 @@ Hattiesburg, MS. Static site, no build step, deploys to Vercel.
 
 ## The idea
 
-**"Price Board."** This is a counter-service seafood joint on Hardy Street, not a
-cinema — so the site is built like the board over the counter and the paper they
-dump the boil on. Warm kraft ground, black ink, boil red, real rules and real
-boxes. Information first: the menu, the season, the hours, set big enough to read
-across a room.
+**Keep it as simple as the restaurant.** You walk in, you look at the board, you
+order at the counter. So the site does five things and stops: says what this is,
+shows what's good and what it costs, tells you whether it's open, tells you where
+it is, and gets you to the order page.
 
-The page does not open with a photograph you scroll past. It opens like a front
-page — headline block on the left, the day's facts boxed on the right, the picture
-underneath. Every photograph on the site is set into a solid black plate, because
-the restaurant's own dish photography is shot on black and a printed page carries
-its pictures that way.
+Warm kraft ground, black ink, one red. One column, big type, a lot of air between
+things. Four sections — menu, photos, what folks say, come see us — and a footer.
 
-Two things here are working software rather than decoration:
+The one piece of working software is the **live open/closed line** under the
+headline: it reads the real opening hours in Hattiesburg's timezone, so somebody
+checking from two states over gets the answer they actually want.
 
-- **The open/closed status** in the masthead and the Today box is computed live
-  from the real opening hours, in Hattiesburg's timezone, so a visitor two states
-  over gets the answer they actually want.
-- **How Much To Order** works out a party order from the two things the restaurant
-  actually states — a platter that feeds a table, and wings sold in fixed counts —
-  and hands anything over sixteen people to the phone.
+Type: **Anton** (signage) / **Newsreader** (everything you read). No third face.
 
-Type: **Anton** (signage) / **Newsreader** (everything you actually read). No third
-face, no mono.
+An earlier version of this build had a seasonality chart, a party-order calculator,
+twenty menu lines and twelve photos. It was too much work to read. If you are
+tempted to add a section, take one out first.
 
 ## Running it
 
