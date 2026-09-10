@@ -382,7 +382,12 @@ body.grain-on .grain {
    is pure black on a pure-black plate shot, so it removes it invisibly */
 .dish-shot::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top, #000 0%, rgba(0,0,0,.97) 17%, rgba(0,0,0,0) 46%);
+  background:
+    /* the source files' background is near-black but not #000, so at full
+       size each tile reads as a faint rectangle; this closes the corners
+       onto the section's true black and lets the plate actually float */
+    radial-gradient(76% 76% at 50% 44%, transparent 50%, #000 100%),
+    linear-gradient(to top, #000 0%, rgba(0,0,0,.97) 17%, rgba(0,0,0,0) 46%);
 }
 /* the two entries with no photograph of their own are set as type instead —
    a board where some lines are just words reads as intentional */
@@ -430,6 +435,10 @@ body.grain-on .grain {
 .strip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(.7rem, 1.6vw, 1.2rem); margin-top: 1.6rem; }
 .strip-item { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--void); }
 .strip-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), opacity .5s; opacity: .82; }
+.strip-item::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(78% 78% at 50% 46%, transparent 52%, #000 100%);
+}
 .strip-item:hover img { transform: scale(1.06); opacity: 1; }
 .strip-item figcaption {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 1.4rem .9rem .8rem;
