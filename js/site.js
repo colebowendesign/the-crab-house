@@ -72,26 +72,76 @@
   setInterval(paint, 60000);
 
   /* ---------------- arrivals ----------------
-     The lift is the only movement on the page. It starts blocks at
-     opacity 0, so nothing here may be allowed to fail quietly — a
-     browser without IntersectionObserver, or one that never fires it,
-     would leave the whole page invisible. Hence the feature check and
-     the backstop timer. */
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) return;
+     Four different moves rather than one, so the page has some rhythm
+     to it. The lift starts blocks at opacity 0, so nothing here may be
+     allowed to fail quietly — a browser without IntersectionObserver,
+     or one that never fires it, would leave the page invisible. Hence
+     the feature check and the backstop timer at the end. */
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const blocks = $$('.front > *, .facts, .front-shot, .head, .group, .menu-more, ' +
-                    '.shots figure, .say, .visit > div');
-  blocks.forEach((el) => el.classList.add('up'));
+  if (reduced || !('IntersectionObserver' in window)) {
+    document.body.classList.add('ready');
+    $$('.head, .group, .shots figure').forEach((el) => el.classList.add('in'));
+    return;
+  }
 
+  /* the hero plays on load rather than on scroll — it is already in view */
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('ready')));
+
+  const lifted = $$('.front-sub, .front-btns, .facts, .front-shot, .menu-more, ' +
+                    '.say, .visit > div, .head p');
+  lifted.forEach((el) => el.classList.add('up'));
+
+  /* the hero's own copy shouldn't wait to be scrolled to */
+  $$('.front-sub, .front-btns').forEach((el, i) => {
+    el.style.transitionDelay = (0.35 + i * 0.1) + 's';
+    setTimeout(() => el.classList.add('in'), 60);
+  });
+
+  const watched = lifted.concat($$('.head, .group, .shots figure'));
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
       e.target.classList.add('in');
       io.unobserve(e.target);
     });
-  }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
-  blocks.forEach((el) => io.observe(el));
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  watched.forEach((el) => io.observe(el));
 
-  setTimeout(() => blocks.forEach((el) => el.classList.add('in')), 3000);
+  /* rAF never fires in a background tab, so .ready — which un-masks the
+     headline — would never land there. The timer covers both. */
+  setTimeout(() => {
+    document.body.classList.add('ready');
+    watched.forEach((el) => el.classList.add('in'));
+  }, 3500);
+
+  /* ---------------- drift ----------------
+     Photographs are cropped taller than their frames, so they can move
+     inside them as the page scrolls. Transform only, read once per
+     frame, and only while the picture is anywhere near the viewport. */
+  const layers = $$('.front-shot img, .shots img').map((img) => ({
+    img,
+    frame: img.parentElement,
+    range: img.parentElement.classList.contains('front-shot') ? 34 : 22,
+  }));
+
+  let pending = false;
+  function drift() {
+    pending = false;
+    const vh = innerHeight;
+    for (const l of layers) {
+      const r = l.frame.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) continue;
+      /* -1 when the frame is entering at the bottom, 1 when it leaves the top */
+      const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
+      l.img.style.transform = 'translate3d(0,' + (p * l.range).toFixed(2) + 'px,0)';
+    }
+  }
+  addEventListener('scroll', () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(drift);
+  }, { passive: true });
+  addEventListener('resize', drift, { passive: true });
+  drift();
 })();

@@ -21,6 +21,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
 
+<noscript><style>
+  /* the reveal leaves rows, headline lines and photo frames hidden until
+     script un-hides them; with no script at all, nothing should be hidden */
+  .row { opacity: 1; transform: none; }
+  .lift > span { transform: none; }
+  .shots figure { clip-path: none; }
+  .head::after, .group h3::after, .row-dots i { transform: scaleX(1); }
+  .band-track { animation: none; }
+</style></noscript>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -72,7 +82,10 @@
 
 <!-- ============ FRONT ============ -->
 <section class="wrap front">
-  <h1>Boiled hard.<span>Seasoned harder.</span></h1>
+  <h1>
+    <span class="lift"><span>Boiled hard.</span></span>
+    <span class="lift red"><span>Seasoned harder.</span></span>
+  </h1>
   <p class="front-sub">Cajun seafood and hot wings on Hardy Street. You order at the
     counter, we call your name.</p>
   <div class="front-btns">
@@ -108,18 +121,18 @@
     <div class="group">
       <h3>Boiled</h3>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Snow Crab Combo</span><span class="row-dots"></span><span class="row-price">$20.99</span></span>
+        <span class="row-line"><span class="row-name">Snow Crab Combo</span><span class="row-dots"><i></i></span><span class="row-price">$20.99</span></span>
         <span class="row-note">With corn, red potatoes and sausage, in garlic butter.</span>
       </a>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Shrimp &amp; Snow Crab</span><span class="row-dots"></span><span class="row-price">$26.99</span></span>
+        <span class="row-line"><span class="row-name">Shrimp &amp; Snow Crab</span><span class="row-dots"><i></i></span><span class="row-price">$26.99</span></span>
       </a>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Mega Combo Platter</span><span class="row-dots"></span><span class="row-price">$45.99</span></span>
+        <span class="row-line"><span class="row-name">Mega Combo Platter</span><span class="row-dots"><i></i></span><span class="row-price">$45.99</span></span>
         <span class="row-note">The whole table in one tray. Bring people.</span>
       </a>
       <a class="row" href="tel:+16012686437">
-        <span class="row-line"><span class="row-name">Blue Crabs &amp; Crawfish</span><span class="row-dots"></span><span class="row-price ask">In season</span></span>
+        <span class="row-line"><span class="row-name">Blue Crabs &amp; Crawfish</span><span class="row-dots"><i></i></span><span class="row-price ask">In season</span></span>
         <span class="row-note">Call and we'll tell you what's running today.</span>
       </a>
     </div>
@@ -127,11 +140,11 @@
     <div class="group">
       <h3>Fried</h3>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">20pc Fried Shrimp</span><span class="row-dots"></span><span class="row-price">$15.99</span></span>
+        <span class="row-line"><span class="row-name">20pc Fried Shrimp</span><span class="row-dots"><i></i></span><span class="row-price">$15.99</span></span>
         <span class="row-note">Cornmeal-crisp and generous. Comes with fries and your sauce.</span>
       </a>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Fried Plates</span><span class="row-dots"></span><span class="row-price ask">See menu</span></span>
+        <span class="row-line"><span class="row-name">Fried Plates</span><span class="row-dots"><i></i></span><span class="row-price ask">See menu</span></span>
         <span class="row-note">Catfish, oysters, fish nuggets, popcorn shrimp, poboys.</span>
       </a>
     </div>
@@ -139,11 +152,11 @@
     <div class="group">
       <h3>Wings &amp; Lunch</h3>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Party Wings</span><span class="row-dots"></span><span class="row-price">From $6.99</span></span>
+        <span class="row-line"><span class="row-name">Party Wings</span><span class="row-dots"><i></i></span><span class="row-price">From $6.99</span></span>
         <span class="row-note">Six pieces to a hundred.</span>
       </a>
       <a class="row" href="https://order.thecrabhousems.com/menu" rel="noopener">
-        <span class="row-line"><span class="row-name">Weekday Lunch</span><span class="row-dots"></span><span class="row-price">From $7.99</span></span>
+        <span class="row-line"><span class="row-name">Weekday Lunch</span><span class="row-dots"><i></i></span><span class="row-price">From $7.99</span></span>
         <span class="row-note">Fish plates, shrimp, tenders and poboys.</span>
       </a>
     </div>
@@ -195,6 +208,22 @@
     </figure>
   </div>
 </section>
+
+<!-- ============ BAND ============ -->
+<div class="band" aria-hidden="true">
+  <div class="band-track">
+    <span class="band-cell"><img src="img/plate/oyster-plate.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/popcorn-shrimp.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/fish-nuggets.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/counter.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/swai-shrimp.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/oyster-plate.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/popcorn-shrimp.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/fish-nuggets.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/counter.jpg" alt="" loading="lazy"></span>
+    <span class="band-cell"><img src="img/plate/swai-shrimp.jpg" alt="" loading="lazy"></span>
+  </div>
+</div>
 
 <!-- ============ VISIT ============ -->
 <section class="wrap" id="visit">

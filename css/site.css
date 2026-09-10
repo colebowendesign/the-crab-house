@@ -89,7 +89,9 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--sign); text-transform: uppercase;
   font-size: clamp(2.7rem, 9vw, 6.2rem); line-height: .92; letter-spacing: -.01em;
 }
-.front h1 span { display: block; color: var(--red); }
+.front h1 .lift { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.front h1 .lift.red { color: var(--red); }
+.front h1 .lift > span { display: block; }
 .front-sub {
   margin: clamp(1.4rem,3vw,2.1rem) auto 0; max-width: 36ch;
   font-size: clamp(1.15rem,1.9vw,1.45rem); line-height: 1.55; color: var(--muted);
@@ -110,8 +112,10 @@ a { color: inherit; text-decoration: none; }
 .facts a:hover { color: var(--red); }
 @media (max-width: 620px) { .facts { gap: .35rem 1rem; font-size: .98rem; } .facts .dot { display: none; } }
 
-.front-shot { margin-top: clamp(2rem,4vw,3rem); aspect-ratio: 2/1; background: #000; }
-.front-shot img { width: 100%; height: 100%; object-fit: cover; }
+.front-shot { margin-top: clamp(2rem,4vw,3rem); aspect-ratio: 2/1; background: #000; position: relative; overflow: hidden; }
+/* the picture is 18% taller than its frame and hung 9% above it, so the
+   drift has the same slack in both directions and never shows an edge */
+.front-shot img { position: absolute; top: -9%; left: 0; width: 100%; height: 118%; object-fit: cover; will-change: transform; }
 @media (max-width: 640px) { .front-shot { aspect-ratio: 4/3; } }
 
 /* ============ SECTION HEADS ============ */
@@ -125,7 +129,9 @@ a { color: inherit; text-decoration: none; }
 .head::after {
   content: ''; display: block; width: 70px; height: 3px; background: var(--ink);
   margin: clamp(1.2rem,2.4vw,1.8rem) auto 0;
+  transform: scaleX(0); transition: transform .8s cubic-bezier(.16,1,.3,1) .2s;
 }
+.head.in::after { transform: scaleX(1); }
 
 /* ============ MENU ============ */
 /* One column, big rows, plenty of air. Eight lines, not twenty. */
@@ -133,13 +139,25 @@ a { color: inherit; text-decoration: none; }
 .group + .group { margin-top: clamp(2.6rem,5vw,4rem); }
 .group h3 {
   font-family: var(--sign); text-transform: uppercase; font-size: 1.35rem; letter-spacing: .08em;
-  color: var(--red); padding-bottom: .6rem; border-bottom: 2px solid var(--ink); margin-bottom: .4rem;
+  color: var(--red); padding-bottom: .6rem; margin-bottom: .4rem; position: relative;
 }
+.group h3::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .9s cubic-bezier(.16,1,.3,1);
+}
+.group.in h3::after { transform: scaleX(1); }
 .row { display: block; padding: 1.15rem 0; border-bottom: 1px solid rgba(26,23,18,.18); }
 .row-line { display: flex; align-items: baseline; gap: .6rem; }
 .row-name { font-size: clamp(1.25rem,2.1vw,1.6rem); font-weight: 600; line-height: 1.2; }
-.row-dots { flex: 1; border-bottom: 2px dotted rgba(26,23,18,.28); transform: translateY(-.3em); min-width: 1.5rem; }
-.row-price { font-family: var(--sign); font-size: clamp(1.25rem,2.1vw,1.55rem); letter-spacing: .01em; white-space: nowrap; }
+.row-dots { flex: 1; position: relative; transform: translateY(-.3em); min-width: 1.5rem; height: 2px; }
+.row-dots i {
+  position: absolute; inset: 0; border-bottom: 2px dotted rgba(26,23,18,.28);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .9s cubic-bezier(.16,1,.3,1) .15s;
+}
+.row-price { font-family: var(--sign); font-size: clamp(1.25rem,2.1vw,1.55rem); letter-spacing: .01em; white-space: nowrap; transition: color .2s, transform .3s var(--ease); }
+a.row:hover .row-price { transform: translateX(-.2rem); }
 .row-price.ask { font-size: 1rem; letter-spacing: .06em; color: var(--muted); }
 .row-note { display: block; margin-top: .3rem; color: var(--muted); font-size: 1.02rem; line-height: 1.5; max-width: 52ch; }
 a.row { transition: background .18s, padding .18s; }
@@ -160,8 +178,9 @@ a.row:hover .row-price { color: var(--red); }
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(to top, #000 0%, rgba(0,0,0,.96) 15%, rgba(0,0,0,0) 34%);
 }
-.shots img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
-.shots figure:hover img { transform: scale(1.05); }
+.shots img { position: absolute; top: -8%; left: 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+.shots figure { transition: transform .4s var(--ease); }
+.shots figure:hover { transform: translateY(-4px); }
 @media (max-width: 760px) { .shots { grid-template-columns: repeat(2,1fr); } }
 
 /* ============ SAYS ============ */
@@ -207,14 +226,78 @@ a.row:hover .row-price { color: var(--red); }
 }
 .foot-bar a:hover { color: var(--red); }
 
+/* ============ THE BAND ============ */
+/* Full width, edge to edge, always moving. It breaks the column and gives
+   the page something alive in it without asking to be read. */
+.band {
+  margin-top: var(--gap); overflow: hidden; background: #000;
+  border-block: 2px solid var(--ink);
+}
+.band-track { display: flex; width: max-content; animation: drift 55s linear infinite; }
+.band-cell { position: relative; flex: none; display: block; width: clamp(170px, 22vw, 280px); aspect-ratio: 1; }
+.band-cell img { width: 100%; height: 100%; object-fit: cover; opacity: .92; transition: opacity .3s; }
+/* same burned-in caption as the grid, same black fade to cover it */
+.band-cell::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, #000 0%, rgba(0,0,0,.96) 15%, rgba(0,0,0,0) 34%);
+}
+.band:hover .band-track { animation-play-state: paused; }
+.band-cell:hover img { opacity: 1; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
 /* ============ ARRIVAL ============ */
-.up { opacity: 0; transform: translateY(12px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+/* Four moves, not one. Copy lifts, headings' rules draw, photographs wipe
+   up from nothing, and menu rows come in one after another. */
+.up { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .up.in { opacity: 1; transform: none; }
+
+/* masked line: the words are pushed below their own box and slide up */
+.lift { display: block; overflow: hidden; }
+.lift > span { display: block; transform: translateY(112%); transition: transform 1s cubic-bezier(.16,1,.3,1); }
+.ready .lift > span, .in .lift > span { transform: none; }
+.front h1 .lift:nth-of-type(2) > span { transition-delay: .12s; }
+
+/* menu rows arrive in sequence and pull their leader across behind them */
+.row { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.group.in .row { opacity: 1; transform: none; }
+.group.in .row-dots i { transform: scaleX(1); }
+.group.in .row:nth-child(2) { transition-delay: .06s; }
+.group.in .row:nth-child(3) { transition-delay: .14s; }
+.group.in .row:nth-child(4) { transition-delay: .22s; }
+.group.in .row:nth-child(5) { transition-delay: .30s; }
+.group.in .row:nth-child(3) .row-dots i { transition-delay: .21s; }
+.group.in .row:nth-child(4) .row-dots i { transition-delay: .29s; }
+.group.in .row:nth-child(5) .row-dots i { transition-delay: .37s; }
+
+/* photographs wipe up out of black and settle out of a slight push in */
+.shots figure { clip-path: inset(0 0 100% 0); transition: clip-path .9s cubic-bezier(.16,1,.3,1), transform .4s var(--ease); }
+.shots figure.in { clip-path: inset(0 0 0 0); }
+.shots figure:nth-child(2), .shots figure:nth-child(5) { transition-delay: .1s; }
+.shots figure:nth-child(3), .shots figure:nth-child(6) { transition-delay: .2s; }
+
+/* the open light breathes while the kitchen is open */
+.facts .is-open::after {
+  content: ''; display: inline-block; width: .5em; height: .5em; margin-left: .5em;
+  border-radius: 50%; background: var(--red); vertical-align: .05em;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.82); } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .up { opacity: 1; transform: none; transition: none; }
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .up, .row { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .lift > span { transform: none !important; }
+  .row-dots i, .head::after, .group h3::after { transform: scaleX(1) !important; }
+  .shots figure { clip-path: none !important; }
+  .band-track { animation: none !important; }
+  .facts .is-open::after { animation: none !important; }
+  /* iteration-count matters as much as duration: without it the infinite
+     drift and breathe keep looping thousands of times a second */
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* ============ NARROW ============ */
