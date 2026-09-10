@@ -53,8 +53,18 @@ than none, because Google will publish it.
 
 Validate at https://search.google.com/test/rich-results.
 
-The visible 4.8★ figure is deliberately not in the JSON-LD: self-reported
-`aggregateRating` on a business's own page is exactly what Google discounts.
+There is deliberately no `aggregateRating` in the JSON-LD: self-reported ratings on
+a business's own page are exactly what Google discounts.
+
+**The rating shown on the page is 4.0 from 194 reviews**, checked against the Google
+Places API in September 2026 (place id `ChIJTw-JcG_fnIgR8RAaor3J9VM`). The site this
+replaced claimed 4.8, which was wrong. Re-check it before any campaign that quotes a
+number, and never carry a rating over from an old page without looking it up.
+
+**The review text has not been verified.** It came from the previous version of this
+site, not from Google — the API key available here does not return review bodies. The
+quotes are reproduced word for word from that source, but somebody should confirm they
+are real, and attributed correctly, before this goes on the client's own domain.
 
 ## Honesty rules that are baked in
 
@@ -63,7 +73,8 @@ The visible 4.8★ figure is deliberately not in the JSON-LD: self-reported
   number.
 - The season chart is labelled as *general Gulf seasons*, with a caveat under it
   telling people to call — it is not a claim about what is in the cooler today.
-- The order calculator says out loud that it is a starting point, not a rule.
+- The three quotes in *What Folks Say* are **verbatim**, with `…` marking anything
+  cut. Never smooth a real person's wording — trim whole sentences or leave it alone.
 
 Keep those. They are the difference between a site the owner can stand behind and
 one that makes promises the kitchen has to keep.
