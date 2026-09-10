@@ -1,26 +1,35 @@
 # The Crab House
 
 Website for The Crab House — Cajun seafood & hot wings, 3801 Hardy St,
-Hattiesburg, MS. Static site, deploys to Vercel.
+Hattiesburg, MS. Static site, no build step, deploys to Vercel.
 
 ## The idea
 
-**"Everything comes out of one pot."** The page is built on a heat spine that
-runs top to bottom: it opens cold and near-black at the Gulf end, warms through
-garlic butter across the boil, peaks at cayenne, then drops to **true black**
-where the plates live so the food has nothing to sit against. Section accents
-(`--accent`) follow that same scale rather than being picked per section — sea
-glass in *The House*, butter in *The Boil*, cayenne on *The Board*.
+**"Price Board."** This is a counter-service seafood joint on Hardy Street, not a
+cinema — so the site is built like the board over the counter and the paper they
+dump the boil on. Warm kraft ground, black ink, boil red, real rules and real
+boxes. Information first: the menu, the season, the hours, set big enough to read
+across a room.
 
-Motion is scroll-driven and restrained: masked word reveals, clip wipes on the
-photography, gentle parallax inside crops, a scrubbed thermometer, and one
-WebGL steam layer over the hero. Nothing pins, nothing hijacks the scroll.
+The page does not open with a photograph you scroll past. It opens like a front
+page — headline block on the left, the day's facts boxed on the right, the picture
+underneath. Every photograph on the site is set into a solid black plate, because
+the restaurant's own dish photography is shot on black and a printed page carries
+its pictures that way.
 
-Type: **Fraunces** (display) / **Inter Tight** (text) / **DM Mono** (labels).
+Two things here are working software rather than decoration:
+
+- **The open/closed status** in the masthead and the Today box is computed live
+  from the real opening hours, in Hattiesburg's timezone, so a visitor two states
+  over gets the answer they actually want.
+- **How Much To Order** works out a party order from the two things the restaurant
+  actually states — a platter that feeds a table, and wings sold in fixed counts —
+  and hands anything over sixteen people to the phone.
+
+Type: **Anton** (signage) / **Newsreader** (everything you actually read). No third
+face, no mono.
 
 ## Running it
-
-No build step — it is a static site. Any local server works:
 
 ```bash
 python3 -m http.server 4319
@@ -31,61 +40,51 @@ Then open http://localhost:4319.
 ## Layout
 
 ```
-index.html        markup, copy, JSON-LD
-css/style.css     all styles, tokens at the top
-js/main.js        intro, scroll reveals, heat spine, thermometer
-js/steam.js       raw-WebGL steam over the hero
-img/              hero, story, visit, spice, og
-img/plate/        the restaurant's own dish photography
-vercel.json       cache headers for /img
+index.html      markup, copy, JSON-LD
+css/site.css    all styles, tokens at the top
+js/site.js      open/closed, season chart, order calculator, arrivals
+img/            table, crawfish, counter-shot, story, og
+img/plate/      the restaurant's own dish photography
+vercel.json     cache headers for /img
 ```
 
-GSAP, ScrollTrigger and Lenis load from cdnjs; everything else is local.
+No frameworks and no CDN scripts — the only network dependency is Google Fonts.
 
-## The imagery
+## Hours live in two places
 
-`img/plate/` is the restaurant's own photography — overhead plates shot on
-black. That is why the menu section drops to pure black: the plates float with
-no frame at all. Several of those files carry a **burned-in red caption in the
-lower left**; `.dish-shot::after` lays a pure-black scrim over the bottom of
-each tile, which removes it invisibly on a black-background photograph. If the
-client supplies clean files, the scrim can be lightened.
-
-`hero.jpg`, `story.jpg`, `visit.jpg` and `spice.jpg` are generated food and
-kitchen imagery standing in for a shoot — they show food, steam and a pot, not
-the actual room. **Swap them for real photographs of the restaurant when they
-are available**; nothing else has to change.
-
-Two board entries (Party Wings) have no photograph of their own and are set as
-type instead. That is deliberate, not a gap — but if a wings photo arrives, the
-tile takes an `img` like the others.
-
-## Local SEO
-
-`index.html` carries a `Restaurant` JSON-LD block with the address, phone and
-opening hours. **If the hours or address change, edit them in three places** —
-the visible table in Visit, the footer, and the JSON-LD in `<head>`. Stale
-structured data is worse than none, because Google will publish it.
+`js/site.js` has an `HOURS` table that drives the live status, and `<head>` has a
+`Restaurant` JSON-LD block. **They must agree.** If the hours change, edit both,
+plus the visible table in *Find Us* and the footer. Stale structured data is worse
+than none, because Google will publish it.
 
 Validate at https://search.google.com/test/rich-results.
 
-The visible 4.8★ figure is not in the JSON-LD on purpose: self-reported
+The visible 4.8★ figure is deliberately not in the JSON-LD: self-reported
 `aggregateRating` on a business's own page is exactly what Google discounts.
 
-## Failure behaviour
+## Honesty rules that are baked in
 
-The loader is a full-screen opaque overlay, so anything that stops the scripts
-would otherwise leave a visitor on a black page. Three backstops:
+- Prices on the board are only the ones actually posted at the counter. Everything
+  else is marked **Ask** and links to the phone, rather than carrying an invented
+  number.
+- The season chart is labelled as *general Gulf seasons*, with a caveat under it
+  telling people to call — it is not a claim about what is in the cooler today.
+- The order calculator says out loud that it is a starting point, not a rule.
 
-- a `noscript` rule that hides it outright;
-- an inline timeout in `<head>` that removes it after 6s regardless;
-- a `setTimeout` in `main.js` at 5.2s that lands the intro timeline on its
-  finished state. That one matters for a page opened in a **background tab**,
-  where `requestAnimationFrame` never fires: without it the loader would be
-  stripped by the inline timeout while the hero was still mid-animation, which
-  is to say invisible.
+Keep those. They are the difference between a site the owner can stand behind and
+one that makes promises the kitchen has to keep.
 
-If you retime the intro, keep both timeouts comfortably longer than it.
+## The imagery
+
+`img/plate/` is the restaurant's own photography, shot overhead on black. Several
+of those files carry a **burned-in red caption in the lower left** — the black
+plate frames crop tightly enough that it mostly falls outside, but check any new
+one you add.
+
+`table.jpg`, `crawfish.jpg`, `counter-shot.jpg` and `story.jpg` are generated food
+imagery standing in for a shoot. They show food and a counter, not the actual
+room. **Swap them for real photographs when the client provides them** — nothing
+else has to change.
 
 ## Deploying
 

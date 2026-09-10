@@ -1,0 +1,438 @@
+/* ============================================================
+   THE CRAB HOUSE — Hattiesburg, MS
+   "Price Board"
+
+   This is a counter-service seafood joint on Hardy Street, not a
+   cinema. So the site is built like the board over the counter and
+   the paper they dump the boil on: warm paper ground, black ink,
+   boil red, real rules and real boxes. Information first — the
+   menu, the season, the hours — set big enough to read across a
+   room.
+
+   Type: Anton (signage) / Newsreader (everything you actually read)
+   ============================================================ */
+
+:root {
+  --paper:   #F2EADB;   /* kraft white — the table */
+  --paper-2: #E6DAC3;   /* deeper band */
+  --paper-3: #FBF7EF;   /* card / inset */
+  --ink:     #17140F;   /* warm near-black */
+  --ink-2:   #554C40;
+  --ink-3:   #8B806E;
+
+  --red:     #C4301B;   /* boil red, off their sign */
+  --red-hi:  #E24A31;
+  --gulf:    #17605A;   /* the second ink */
+  --butter:  #B77D0A;   /* prices */
+
+  --sign: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  --read: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+  --pad: clamp(1rem, 4vw, 3.5rem);
+  --max: 1400px;
+  --ease: cubic-bezier(.2,.7,.3,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--paper); scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--read);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--red); color: var(--paper); }
+:focus-visible { outline: 3px solid var(--gulf); outline-offset: 2px; }
+
+/* the whole page sits on a faint paper tooth */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.055'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ---------- shared type ---------- */
+.sign { font-family: var(--sign); font-weight: 400; text-transform: uppercase; letter-spacing: .01em; line-height: .92; }
+.tag {
+  font-family: var(--sign); font-size: .78rem; letter-spacing: .16em;
+  text-transform: uppercase; line-height: 1;
+}
+.skip {
+  position: absolute; left: 50%; top: 0; transform: translate(-50%,-130%);
+  background: var(--ink); color: var(--paper); padding: .7rem 1.2rem; z-index: 300;
+  font-family: var(--sign); letter-spacing: .14em; text-transform: uppercase; font-size: .8rem;
+  transition: transform .2s;
+}
+.skip:focus { transform: translate(-50%,0); }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding-inline: var(--pad); }
+
+/* ============ MASTHEAD ============ */
+/* Two tiers, like a paper: the name and the day's facts, then the
+   sections. It collapses to one slim tier once you start reading. */
+.mast { position: sticky; top: 0; z-index: 100; background: var(--paper); border-bottom: 3px solid var(--ink); }
+.mast-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding: clamp(.9rem,2vw,1.5rem) var(--pad);
+  max-width: var(--max); margin: 0 auto;
+  transition: padding .3s var(--ease);
+}
+.mast-name { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
+.mast-name b {
+  font-family: var(--sign); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem); line-height: .9; letter-spacing: -.005em;
+  transition: font-size .3s var(--ease);
+}
+.mast-name b i { font-style: normal; color: var(--red); }
+.mast-name span { font-family: var(--read); font-size: .82rem; color: var(--ink-2); font-style: italic; }
+
+.mast-facts { display: flex; align-items: center; gap: clamp(.7rem,1.6vw,1.5rem); flex-wrap: wrap; justify-content: flex-end; }
+/* live open/closed, worked out from the real opening hours */
+.status {
+  display: inline-flex; align-items: center; gap: .5rem;
+  border: 2px solid var(--ink); padding: .42rem .75rem; background: var(--paper-3);
+}
+.status-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-3); flex: none; }
+.status.open  .status-dot { background: var(--gulf); box-shadow: 0 0 0 3px rgba(23,96,90,.2); }
+.status.shut  .status-dot { background: var(--red); }
+.status b { font-family: var(--sign); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; }
+.status span { font-family: var(--read); font-size: .82rem; color: var(--ink-2); white-space: nowrap; }
+
+.mast-tel { font-family: var(--sign); font-size: clamp(1rem,1.8vw,1.35rem); letter-spacing: .01em; }
+.mast-tel:hover { color: var(--red); }
+
+.order-btn {
+  display: inline-block;
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .07em;
+  background: var(--red); color: #fff; padding: .72em 1.25em; font-size: 1rem;
+  border: 2px solid var(--red); white-space: nowrap;
+  transition: background .2s, color .2s, transform .12s;
+}
+.order-btn:hover { background: var(--ink); border-color: var(--ink); }
+.order-btn:active { transform: translateY(1px); }
+
+.mast-nav { border-top: 1px solid var(--ink); background: var(--paper); }
+.mast-nav ul {
+  list-style: none; display: flex; max-width: var(--max); margin: 0 auto;
+  padding-inline: var(--pad); overflow-x: auto; scrollbar-width: none;
+}
+.mast-nav ul::-webkit-scrollbar { display: none; }
+.mast-nav li { flex: none; }
+.mast-nav a {
+  display: block; font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em;
+  font-size: .88rem; padding: .72rem clamp(.7rem,1.7vw,1.3rem); color: var(--ink-2);
+  border-right: 1px solid rgba(23,20,15,.18); position: relative;
+}
+.mast-nav li:first-child a { padding-left: 0; }
+.mast-nav a:hover { color: var(--ink); background: var(--paper-2); }
+.mast-nav a.here { color: var(--red); }
+.mast-nav a.here::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--red); }
+
+/* collapsed once you are into the page */
+.mast.tight .mast-top { padding-block: .55rem; }
+.mast.tight .mast-name b { font-size: clamp(1.25rem, 2.4vw, 1.7rem); }
+.mast.tight .mast-name span { display: none; }
+@media (max-width: 900px) {
+  .mast-name span { display: none; }
+  .status span { display: none; }
+}
+@media (max-width: 620px) {
+  .mast-tel { display: none; }
+  .mast-top { gap: .8rem; }
+}
+
+/* ============ FRONT PAGE ============ */
+/* Not a photograph with words on it — a front page: the headline
+   block on the left, the day's facts boxed on the right, the picture
+   underneath where a paper would run it. */
+.front { padding-top: clamp(2rem, 5vw, 4rem); }
+.front-grid {
+  display: grid; grid-template-columns: minmax(0,1.55fr) minmax(280px,.85fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start;
+}
+.front-kicker {
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .18em;
+  font-size: clamp(.72rem,1.4vw,.9rem); color: var(--red);
+  border-bottom: 2px solid var(--ink); padding-bottom: .7rem; margin-bottom: clamp(1rem,2vw,1.6rem);
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.front-kicker em { font-style: normal; color: var(--ink-2); }
+.front-head {
+  font-family: var(--sign); text-transform: uppercase;
+  font-size: clamp(2.6rem, 7.4vw, 6.5rem); line-height: .86; letter-spacing: -.012em;
+}
+.front-head i { font-style: normal; color: var(--red); }
+.front-head u { text-decoration: none; -webkit-text-stroke: 2px var(--ink); color: transparent; }
+.front-deck {
+  margin-top: clamp(1.2rem,2.4vw,1.9rem); font-size: clamp(1.08rem,1.55vw,1.32rem);
+  line-height: 1.6; max-width: 40ch; color: var(--ink-2);
+}
+.front-deck b { color: var(--ink); font-weight: 600; }
+.front-cta { margin-top: clamp(1.4rem,2.6vw,2.1rem); display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
+.link-btn {
+  display: inline-block;
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .07em; font-size: 1rem;
+  padding: .72em 1.25em; border: 2px solid var(--ink); background: transparent;
+  transition: background .2s, color .2s;
+}
+.link-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* the day's facts, boxed like a weather panel */
+.today { border: 3px solid var(--ink); background: var(--paper-3); }
+.today h2 {
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .12em; font-size: .92rem;
+  background: var(--ink); color: var(--paper); padding: .6rem .9rem; font-weight: 400;
+}
+.today-body { padding: 1.1rem .95rem 1.2rem; }
+.today-row { display: flex; justify-content: space-between; gap: 1rem; padding: .5rem 0; border-bottom: 1px dotted rgba(23,20,15,.3); font-size: .95rem; }
+.today-row:last-of-type { border-bottom: 0; }
+.today-row dt { color: var(--ink-2); }
+.today-row dd { font-weight: 600; text-align: right; }
+.today-now { font-family: var(--sign); font-size: clamp(1.5rem,2.6vw,2rem); line-height: 1; margin-bottom: .2rem; }
+.today-now.open { color: var(--gulf); }
+.today-now.shut { color: var(--red); }
+.today-sub { font-size: .9rem; color: var(--ink-2); font-style: italic; margin-bottom: 1rem; }
+.today-addr { margin-top: 1.1rem; padding-top: 1rem; border-top: 2px solid var(--ink); font-size: .95rem; line-height: 1.5; }
+.today-addr a { border-bottom: 1px solid var(--ink-3); }
+.today-addr a:hover { color: var(--red); border-color: var(--red); }
+@media (max-width: 880px) { .front-grid { grid-template-columns: 1fr; } }
+
+/* photographs are dark, the page is paper — so every picture is set
+   into a solid black plate, the way a printed page carries one */
+.plate { background: #000; border: 3px solid var(--ink); overflow: hidden; position: relative; }
+.plate img { width: 100%; height: 100%; object-fit: cover; }
+.plate figcaption {
+  position: absolute; left: 0; bottom: 0; right: 0;
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .12em; font-size: .72rem;
+  color: var(--paper); background: rgba(0,0,0,.72); padding: .5rem .8rem;
+}
+.front-shot { margin-top: clamp(1.8rem,3.5vw,3rem); aspect-ratio: 21/9; }
+@media (max-width: 700px) { .front-shot { aspect-ratio: 3/2; } }
+
+/* ============ SECTION HEADS ============ */
+/* A slab of ink with the name knocked out of it. No labels, no
+   numbering, no hairline — you can read these from the door. */
+.slab {
+  background: var(--ink); color: var(--paper);
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap;
+  padding: clamp(.7rem,1.6vw,1.1rem) clamp(.9rem,2vw,1.4rem);
+  margin-top: clamp(3.5rem,7vw,6rem);
+}
+.slab h2 { font-family: var(--sign); font-weight: 400; text-transform: uppercase; font-size: clamp(1.5rem,3.6vw,2.6rem); line-height: 1; letter-spacing: .005em; }
+.slab h2 i { font-style: normal; color: var(--red-hi); }
+.slab p { font-family: var(--read); font-style: italic; font-size: .95rem; color: rgba(242,234,219,.72); }
+
+/* ============ THE PRICE BOARD ============ */
+.board-note {
+  border: 2px solid var(--ink); border-top: 0; padding: .85rem 1rem;
+  font-size: .95rem; color: var(--ink-2); background: var(--paper-3);
+}
+.board-note b { color: var(--ink); }
+.board-cols { columns: 2; column-gap: clamp(2rem,4vw,4rem); margin-top: clamp(1.8rem,3.5vw,2.8rem); }
+@media (max-width: 900px) { .board-cols { columns: 1; } }
+
+.cat { break-inside: avoid; margin-bottom: clamp(2rem,3.5vw,3rem); }
+.cat > h3 {
+  font-family: var(--sign); text-transform: uppercase; font-size: clamp(1.3rem,2.4vw,1.85rem);
+  line-height: 1; border-bottom: 3px solid var(--ink); padding-bottom: .5rem; margin-bottom: .3rem;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+}
+.cat > h3 em { font-family: var(--read); font-style: italic; font-size: .8rem; color: var(--ink-2); text-transform: none; letter-spacing: 0; }
+
+.item { display: block; padding: .78rem 0; border-bottom: 1px dotted rgba(23,20,15,.35); }
+.item-line { display: flex; align-items: baseline; gap: .4rem; }
+.item-name { font-weight: 600; font-size: 1.08rem; white-space: nowrap; }
+/* the leader dots are the whole look of a printed board */
+.item-dots { flex: 1; border-bottom: 2px dotted rgba(23,20,15,.35); transform: translateY(-.28em); min-width: 1.5rem; }
+.item-price { font-family: var(--sign); font-size: 1.18rem; color: var(--butter); letter-spacing: .01em; white-space: nowrap; }
+.item-price.ask { font-size: .82rem; letter-spacing: .1em; color: var(--gulf); }
+.item-note { display: block; font-size: .9rem; color: var(--ink-2); margin-top: .18rem; max-width: 46ch; line-height: 1.45; }
+a.item { transition: background .18s, padding .18s; }
+a.item:hover { background: var(--paper-2); padding-inline: .55rem; }
+a.item:hover .item-dots { border-bottom-color: var(--red); }
+a.item:hover .item-price { color: var(--red); }
+
+.board-foot {
+  margin-top: clamp(1.5rem,3vw,2.2rem); border: 3px solid var(--ink); background: var(--paper-3);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap;
+  padding: 1.1rem 1.2rem;
+}
+.board-foot p { font-size: 1rem; color: var(--ink-2); max-width: 52ch; }
+
+/* ============ WHAT'S RUNNING ============ */
+.season { margin-top: clamp(1.8rem,3.5vw,2.6rem); }
+.season-scroll { overflow-x: auto; }
+.season-grid {
+  display: grid; grid-template-columns: 8.5rem repeat(12, minmax(2.4rem, 1fr));
+  align-items: center; min-width: 640px;
+}
+.season-grid > * { border-bottom: 1px solid rgba(23,20,15,.22); }
+.season-head {
+  font-family: var(--sign); text-transform: uppercase; font-size: .78rem; letter-spacing: .06em;
+  color: var(--ink-2); text-align: center; padding: .5rem 0; border-bottom: 2px solid var(--ink) !important;
+}
+.season-head:first-child { text-align: left; }
+.season-name { font-weight: 600; font-size: 1.02rem; padding: .85rem .8rem .85rem 0; }
+.season-name small { display: block; font-weight: 400; font-style: italic; font-size: .8rem; color: var(--ink-3); }
+.season-cell { height: 100%; min-height: 3.1rem; position: relative; padding: .55rem .12rem; }
+.season-bar { height: 100%; width: 100%; background: var(--paper-2); position: relative; }
+.season-bar.on   { background: rgba(23,96,90,.28); }
+.season-bar.peak { background: var(--red); }
+/* the bars draw out from the left when the block comes into view */
+.season-bar > i {
+  position: absolute; inset: 0; background: inherit; transform-origin: left;
+  transform: scaleX(0); transition: transform .5s var(--ease);
+}
+.season.in .season-bar > i { transform: scaleX(1); }
+.season-key { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 1.1rem; font-size: .9rem; color: var(--ink-2); }
+.season-key span { display: inline-flex; align-items: center; gap: .5rem; }
+.season-key b { width: 1.4rem; height: .75rem; display: inline-block; }
+.season-caveat { margin-top: 1rem; font-style: italic; color: var(--ink-2); font-size: .95rem; max-width: 62ch; }
+
+/* ============ HOW MUCH TO ORDER ============ */
+.calc {
+  margin-top: clamp(1.8rem,3.5vw,2.6rem);
+  display: grid; grid-template-columns: minmax(260px,.8fr) minmax(0,1.2fr); gap: 0;
+  border: 3px solid var(--ink);
+}
+@media (max-width: 820px) { .calc { grid-template-columns: 1fr; } }
+.calc-in { padding: clamp(1.3rem,2.6vw,2rem); background: var(--paper-3); border-right: 3px solid var(--ink); }
+@media (max-width: 820px) { .calc-in { border-right: 0; border-bottom: 3px solid var(--ink); } }
+.calc-in label { font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em; font-size: .85rem; color: var(--ink-2); display: block; }
+.calc-count { display: flex; align-items: center; gap: .9rem; margin-top: .9rem; }
+.calc-count button {
+  width: 2.6rem; height: 2.6rem; border: 2px solid var(--ink); background: var(--paper);
+  font-family: var(--sign); font-size: 1.4rem; line-height: 1; cursor: pointer; color: var(--ink);
+  transition: background .18s, color .18s;
+}
+.calc-count button:hover { background: var(--ink); color: var(--paper); }
+.calc-count output { font-family: var(--sign); font-size: clamp(3rem,7vw,4.6rem); line-height: .9; min-width: 2.4ch; text-align: center; }
+.calc-count em { font-style: italic; color: var(--ink-2); font-size: .95rem; }
+.calc-slider { width: 100%; margin-top: 1.4rem; accent-color: var(--red); }
+.calc-out { padding: clamp(1.3rem,2.6vw,2rem); }
+.calc-out h3 { font-family: var(--sign); text-transform: uppercase; font-size: 1.1rem; letter-spacing: .08em; color: var(--red); margin-bottom: .9rem; }
+.calc-list { list-style: none; }
+.calc-list li { display: flex; align-items: baseline; gap: .6rem; padding: .62rem 0; border-bottom: 1px dotted rgba(23,20,15,.3); font-size: 1.05rem; }
+.calc-list li b { font-family: var(--sign); font-size: 1.25rem; color: var(--ink); min-width: 2.6ch; }
+.calc-list li span { flex: 1; }
+.calc-list li i { font-style: italic; color: var(--ink-3); font-size: .88rem; }
+.calc-total { margin-top: 1.1rem; font-size: 1.02rem; line-height: 1.9; }
+.calc-total b { font-family: var(--sign); font-size: 1.5rem; color: var(--butter); }
+.calc-caveat { margin-top: .9rem; font-style: italic; color: var(--ink-2); font-size: .92rem; line-height: 1.5; }
+.calc-big { margin-top: 1rem; }
+
+/* ============ THE WALL ============ */
+/* Deliberately uneven — pictures pinned up, not a gallery grid. */
+.wall { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(.7rem,1.5vw,1.2rem); margin-top: clamp(1.8rem,3.5vw,2.6rem); }
+.wall .plate { grid-column: span 2; aspect-ratio: 1; }
+.wall .plate:nth-child(1) { grid-column: span 3; aspect-ratio: 3/2; }
+.wall .plate:nth-child(2) { grid-column: span 3; aspect-ratio: 3/2; }
+.wall .plate:nth-child(7) { grid-column: span 3; aspect-ratio: 3/2; }
+.wall .plate:nth-child(8) { grid-column: span 3; aspect-ratio: 3/2; }
+.wall .plate img { transition: transform .6s var(--ease); }
+.wall .plate:hover img { transform: scale(1.05); }
+@media (max-width: 900px) { .wall { grid-template-columns: repeat(4, 1fr); } .wall .plate:nth-child(n) { grid-column: span 2; aspect-ratio: 1; } }
+@media (max-width: 560px) { .wall { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============ WHAT FOLKS SAY ============ */
+.says { columns: 3; column-gap: clamp(1.6rem,3.5vw,3rem); margin-top: clamp(1.8rem,3.5vw,2.6rem); column-rule: 1px solid rgba(23,20,15,.25); }
+@media (max-width: 950px) { .says { columns: 2; } }
+@media (max-width: 620px) { .says { columns: 1; } }
+.say { break-inside: avoid; margin-bottom: 1.9rem; }
+.say-stars { color: var(--red); font-size: .95rem; letter-spacing: .16em; }
+.say p { margin-top: .45rem; font-size: 1.04rem; line-height: 1.55; }
+.say p::first-letter { font-family: var(--sign); font-size: 2.6em; float: left; line-height: .78; padding: .06em .12em 0 0; color: var(--ink); }
+.say cite {
+  display: block; margin-top: .6rem; font-style: normal;
+  font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em; font-size: .78rem; color: var(--ink-2);
+}
+
+/* ============ FIND US ============ */
+.ways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: clamp(1.8rem,3.5vw,2.6rem); border: 3px solid var(--ink); }
+@media (max-width: 800px) { .ways { grid-template-columns: 1fr; } }
+.way { padding: clamp(1.3rem,2.6vw,2rem); border-right: 3px solid var(--ink); display: flex; flex-direction: column; }
+.way:last-child { border-right: 0; }
+@media (max-width: 800px) { .way { border-right: 0; border-bottom: 3px solid var(--ink); } .way:last-child { border-bottom: 0; } }
+.way-n { font-family: var(--sign); font-size: 2.4rem; line-height: 1; color: var(--red); }
+.way h3 { font-family: var(--sign); text-transform: uppercase; font-size: 1.35rem; margin: .5rem 0 .55rem; letter-spacing: .03em; }
+.way p { font-size: 1rem; color: var(--ink-2); flex: 1; line-height: 1.55; }
+.way .link-btn, .way .order-btn { margin-top: 1.2rem; align-self: flex-start; }
+
+.visit-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(1.5rem,4vw,3.5rem); margin-top: clamp(2rem,4vw,3rem); align-items: start; }
+@media (max-width: 800px) { .visit-grid { grid-template-columns: 1fr; } }
+.hours { width: 100%; border-collapse: collapse; }
+.hours caption { font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em; font-size: .9rem; text-align: left; padding-bottom: .6rem; border-bottom: 3px solid var(--ink); margin-bottom: .3rem; }
+.hours td { padding: .72rem 0; border-bottom: 1px dotted rgba(23,20,15,.35); font-size: 1.02rem; }
+.hours td:last-child { text-align: right; font-family: var(--sign); font-size: 1.02rem; letter-spacing: .02em; }
+.hours tr.today-row-hit td { color: var(--red); }
+.hours tr.today-row-hit td:first-child::before { content: '▶ '; font-size: .7em; vertical-align: middle; }
+
+.where h3 { font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em; font-size: .9rem; padding-bottom: .6rem; border-bottom: 3px solid var(--ink); }
+.where address { font-style: normal; font-size: clamp(1.25rem,2.4vw,1.7rem); line-height: 1.35; margin-top: 1rem; font-weight: 600; }
+.where .big-tel { display: inline-block; margin-top: 1rem; font-family: var(--sign); font-size: clamp(1.8rem,4vw,2.8rem); letter-spacing: .01em; }
+.where .big-tel:hover { color: var(--red); }
+.where p { margin-top: 1rem; color: var(--ink-2); font-size: 1rem; }
+
+/* ============ FOOTER ============ */
+.foot { margin-top: clamp(4rem,8vw,7rem); border-top: 3px solid var(--ink); background: var(--paper-2); }
+.foot-in { max-width: var(--max); margin: 0 auto; padding: clamp(2rem,4vw,3rem) var(--pad); display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
+.foot-mark { font-family: var(--sign); text-transform: uppercase; font-size: clamp(1.8rem,4vw,2.6rem); line-height: .9; }
+.foot-mark i { font-style: normal; color: var(--red); }
+.foot-mark + p { margin-top: .6rem; font-style: italic; color: var(--ink-2); max-width: 34ch; }
+.foot-links { display: flex; gap: clamp(1.5rem,4vw,3.5rem); flex-wrap: wrap; }
+.foot-links ul { list-style: none; }
+.foot-links h4 { font-family: var(--sign); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; color: var(--ink-2); margin-bottom: .6rem; }
+.foot-links li { margin-bottom: .35rem; }
+.foot-links a { font-size: .98rem; border-bottom: 1px solid transparent; }
+.foot-links a:hover { border-bottom-color: var(--red); color: var(--red); }
+.foot-bar { border-top: 1px solid rgba(23,20,15,.28); }
+.foot-bar div {
+  max-width: var(--max); margin: 0 auto; padding: 1rem var(--pad);
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  font-size: .82rem; color: var(--ink-2);
+}
+.foot-bar a:hover { color: var(--red); }
+
+/* ============ ENTRANCE ============ */
+/* One move, used everywhere: a short lift as the block arrives.
+   No wipes, no masks, no pinning. */
+.up { opacity: 0; transform: translateY(14px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+.up.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .up { opacity: 1; transform: none; transition: none; }
+  .season-bar > i { transform: scaleX(1); transition: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ============ NARROW ============ */
+@media (max-width: 620px) {
+  /* the masthead has four things to fit and a phone's width to do it in */
+  .mast-name b { font-size: 1.45rem; }
+  .mast-facts { gap: .55rem; }
+  .order-btn { font-size: .84rem; padding: .62em 1em; }
+  .status { padding: .34rem .55rem; }
+  .status b { font-size: .72rem; }
+  .mast-nav a { font-size: .8rem; padding: .62rem .8rem; }
+
+  /* Anton caps have no descenders, so .86 reads tight rather than cramped
+     at desktop sizes — at phone sizes it just reads cramped */
+  .front-head { line-height: .93; }
+  .front-kicker { flex-direction: column; gap: .35rem; }
+  .slab { flex-direction: column; align-items: flex-start; gap: .3rem; }
+  .board-foot, .board-foot .order-btn { width: 100%; text-align: center; }
+  .calc-count output { font-size: 3.4rem; }
+  .way .link-btn, .way .order-btn { width: 100%; text-align: center; }
+  /* the note has nowhere to sit beside the label on a phone */
+  .calc-list li { flex-wrap: wrap; }
+  .calc-list li i { flex-basis: 100%; margin-left: 3.2rem; margin-top: .15rem; }
+}
